@@ -1,0 +1,47 @@
+[
+  {
+    "id": "usr_101",
+    "name": "Kundu Admin",
+    "email": "admin@kunduagro.com",
+    "role": "Admin",
+    "status": "Active",
+    "phone": "+880 1711-000001",
+    "createdAt": "2026-01-10T08:00:00.000Z"
+  },
+  {
+    "id": "usr_102",
+    "name": "Animesh Kundu",
+    "email": "animesh@kunduagro.com",
+    "role": "Manager",
+    "status": "Active",
+    "phone": "+880 1712-345678",
+    "createdAt": "2026-01-15T10:30:00.000Z"
+  },
+  {
+    "id": "usr_103",
+    "name": "Rahim Ahmed",
+    "email": "rahim.ahmed@gmail.com",
+    "role": "Customer",
+    "status": "Active",
+    "phone": "+880 1819-112233",
+    "createdAt": "2026-02-01T14:15:00.000Z"
+  },
+  {
+    "id": "usr_104",
+    "name": "Tania Sultana",
+    "email": "tania.s@yahoo.com",
+    "role": "Customer",
+    "status": "Active",
+    "phone": "+880 1912-887766",
+    "createdAt": "2026-02-12T11:45:00.000Z"
+  },
+  {
+    "id": "usr_105",
+    "name": "Biplob Hasan",
+    "email": "biplob.staff@kunduagro.com",
+    "role": "Staff",
+    "status": "Inactive",
+    "phone": "+880 1611-445566",
+    "createdAt": "2026-02-20T09:20:00.000Z"
+  }
+]
