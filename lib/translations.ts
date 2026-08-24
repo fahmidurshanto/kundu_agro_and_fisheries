@@ -3,9 +3,14 @@ export type Language = "en" | "bn";
 export const translations = {
   en: {
     // Header & Navigation
+    brandName: "Kundu Agro & Fisheries",
     adminPanel: "Admin panel",
+    home: "Home",
+    shop: "Shop",
     dashboard: "Dashboard",
+    dashboardSubtitle: "Overview of your agro and fisheries operations.",
     products: "Products",
+
     blogs: "Blogs",
     users: "Users",
     addProduct: "Add Product",
@@ -13,15 +18,35 @@ export const translations = {
     logout: "Log out",
     menu: "Menu",
 
-    // Dashboard Page
-    dashboardTitle: "Dashboard",
-    dashboardSubtitle: "Overview of your agro and fisheries operations.",
-    statProducts: "Products",
-    statUsers: "Users",
-    statOrders: "Orders",
+    // Home Page Hero & Sections
+    heroBadge: "Fresh & Organic Guaranteed",
+    heroTitle: "Premium Quality Agro & Fisheries Products",
+    heroSubtitle: "Directly sourced fresh fish, premium feeds, and agricultural fertilizers delivered to your doorstep across Bangladesh.",
+    shopNow: "Shop Now",
+    exploreBlogs: "Explore Knowledge Hub",
+    featuredCategories: "Featured Categories",
+    freshFish: "Fresh Fish",
+    fishFeed: "Fish & Poultry Feed",
+    fertilizer: "Bio-Fertilizer",
+    equipment: "Farm Equipment",
+    freshFishDesc: "Pond fresh Rui, Katla, Tilapia & Pangas",
+    fishFeedDesc: "High nutrition balanced growth feed",
+    fertilizerDesc: "Soil enrichment organic fertilizers",
+    equipmentDesc: "Aerators, nets and farming tools",
+    latestProducts: "Latest Products",
+    viewAllProducts: "View All Products",
+    whyChooseUs: "Why Choose Kundu Agro?",
+    qualityAssured: "100% Quality Assured",
+    qualityAssuredDesc: "Handpicked fresh produce and lab-tested feeds",
+    fastDelivery: "Fast Express Delivery",
+    fastDeliveryDesc: "Safely packaged & dispatched promptly",
+    support247: "Dedicated Customer Support",
+    support247Desc: "Assisting farmers & customers nationwide",
 
-    // Products Page & Table
-    productsTitle: "Products",
+    // Products Page & Cart
+    productsTitle: "Products Catalog",
+    allCategories: "All Categories",
+    searchProductsPlaceholder: "Search products by name or category...",
     noProductsSubtitle: "No products in your catalog yet.",
     productsSubtitleCount: "products in your catalog.",
     productSubtitleCount: "product in your catalog.",
@@ -36,6 +61,38 @@ export const translations = {
     addProductSubtitle: "Publish a new product to your store catalog.",
     editProductTitle: "Edit Product",
     editProductSubtitle: "Update product details and pricing.",
+    addToCart: "Add to Cart",
+    addedToCart: "Added!",
+    viewDetails: "View Details",
+
+    // Cart Drawer
+    yourCart: "Your Shopping Cart",
+    cartEmpty: "Your cart is empty",
+    startShopping: "Browse our catalog to add items to your cart.",
+    subtotal: "Subtotal",
+    shippingCalculated: "Shipping & taxes calculated at checkout",
+    proceedToCheckout: "Proceed to Checkout",
+    clearCart: "Clear Cart",
+
+    // Checkout Page
+    checkoutTitle: "Checkout & Order Details",
+    contactInfo: "Contact Information",
+    fullName: "Full Name",
+    phoneNumber: "Phone Number",
+    shippingAddress: "Shipping Address",
+    districtCity: "District / City",
+    deliveryNotes: "Delivery Notes (Optional)",
+    paymentMethod: "Payment Method",
+    cashOnDelivery: "Cash on Delivery",
+    cashOnDeliveryDesc: "Pay in cash upon delivery to your doorstep",
+    digitalPayment: "bKash / Nagad / Mobile Banking",
+    digitalPaymentDesc: "Send money to our official merchant wallet",
+    orderSummary: "Order Summary",
+    placeOrder: "Confirm Order",
+    placingOrder: "Processing Order...",
+    orderSuccessTitle: "Order Placed Successfully!",
+    orderSuccessDesc: "Thank you for your order. Our team will call you shortly to confirm delivery details.",
+    backToHome: "Return to Homepage",
 
     // Users Page & Table
     usersTitle: "Users & Team",
@@ -63,8 +120,8 @@ export const translations = {
     statusInactive: "Inactive",
 
     // Blogs Page & Table
-    blogPostsTitle: "Blog Posts",
-    blogPostsSubtitle: "Manage your articles, news, and updates.",
+    blogPostsTitle: "Blog Posts & Articles",
+    blogPostsSubtitle: "Read news, aquaculture guides, and tips from experts.",
     addNewBlog: "Add New Blog",
     noBlogPostsYet: "No blog posts yet.",
     clickToCreateBlog: 'Click "Add New Blog" to write your first article.',
@@ -102,9 +159,14 @@ export const translations = {
   },
   bn: {
     // Header & Navigation
+    brandName: "কুন্ডু এগ্রো এন্ড ফিশারিজ",
     adminPanel: "এডমিন প্যানেল",
+    home: "হোম",
+    shop: "দোকান",
     dashboard: "ড্যাশবোর্ড",
+    dashboardSubtitle: "আপনার কৃষি ও মৎস্য কার্যক্রমের সারসংক্ষেপ।",
     products: "পণ্যসমূহ",
+
     blogs: "ব্লগসমূহ",
     users: "ব্যবহারকারীগণ",
     addProduct: "পণ্য যোগ করুন",
@@ -112,18 +174,38 @@ export const translations = {
     logout: "লগ আউট",
     menu: "মেনু",
 
-    // Dashboard Page
-    dashboardTitle: "ড্যাশবোর্ড",
-    dashboardSubtitle: "আপনার কৃষি ও মৎস্য কার্যক্রমের সারসংক্ষেপ।",
-    statProducts: "পণ্যসমূহ",
-    statUsers: "ব্যবহারকারীগণ",
-    statOrders: "অর্ডারসমূহ",
+    // Home Page Hero & Sections
+    heroBadge: "১০০% তাজা ও অর্গানিক গ্যারান্টি",
+    heroTitle: "প্রিমিয়াম কোয়ালিটির কৃষি ও মৎস্য পণ্য",
+    heroSubtitle: "সরাসরি পুকুর থেকে তাজা মাছ, উন্নতমানের ফিড এবং কৃষি সার যা সারাদেশে আপনার দোরগোড়ায় পৌঁছে দেওয়া হয়।",
+    shopNow: "পণ্য কিনুন",
+    exploreBlogs: "ব্লগ ও গাইড দেখুন",
+    featuredCategories: "জনপ্রিয় ক্যাটাগরি",
+    freshFish: "তাজা মাছ",
+    fishFeed: "মৎস্য ও পোল্ট্রি ফিড",
+    fertilizer: "জৈব ও রাসায়নিক সার",
+    equipment: "খামার সরঞ্জাম",
+    freshFishDesc: "পুকুরের তাজা রুই, কাতলা, তেলাপিয়া ও পাঙ্গাস",
+    fishFeedDesc: "দ্রুত বৃদ্ধির জন্য সুষম পুষ্টিকর ফিড",
+    fertilizerDesc: "মাটির উর্বরতা বৃদ্ধিকারী সার",
+    equipmentDesc: "অ্যারেটর, জাল এবং খামারের সরঞ্জাম",
+    latestProducts: "সাম্প্রতিক পণ্যসমূহ",
+    viewAllProducts: "সব পণ্য দেখুন",
+    whyChooseUs: "কেন কুন্ডু এগ্রো বেছে নেবেন?",
+    qualityAssured: "১০০% মান নিশ্চিত",
+    qualityAssuredDesc: "ল্যাব-পরীক্ষিত ফিড এবং নিখুঁত তাজা পণ্য",
+    fastDelivery: "দ্রুত এক্সপ্রেস ডেলিভারি",
+    fastDeliveryDesc: "সুরক্ষিত প্যাকেজিং সহ দ্রুততম সময়ে প্রেরণ",
+    support247: "২৪/৭ সার্বক্ষণিক সেবা",
+    support247Desc: "সারাদেশের চাষী ও গ্রাহকদের সহায়তা প্রদান",
 
-    // Products Page & Table
-    productsTitle: "পণ্যসমূহ",
+    // Products Page & Cart
+    productsTitle: "পণ্য ক্যাটালগ",
+    allCategories: "সকল ক্যাটাগরি",
+    searchProductsPlaceholder: "নাম বা ক্যাটাগরি দিয়ে পণ্য খুঁজুন...",
     noProductsSubtitle: "আপনার ক্যাটালগে এখনও কোনো পণ্য নেই।",
-    productsSubtitleCount: "টি পণ্য আপনার ক্যাটালগে রয়েছে।",
-    productSubtitleCount: "টি পণ্য আপনার ক্যাটালগে রয়েছে।",
+    productsSubtitleCount: "টি পণ্য ক্যাটালগে রয়েছে।",
+    productSubtitleCount: "টি পণ্য ক্যাটালগে রয়েছে।",
     catalogEmpty: "আপনার ক্যাটালগ খালি।",
     addFirstProduct: "তাজা কৃষি ও মৎস্য পণ্য বিক্রি শুরু করতে আপনার প্রথম পণ্যটি যোগ করুন।",
     addedOn: "যোগ করা হয়েছে",
@@ -135,6 +217,38 @@ export const translations = {
     addProductSubtitle: "আপনার স্টোর ক্যাটালগে একটি নতুন পণ্য প্রকাশ করুন।",
     editProductTitle: "পণ্য সম্পাদনা করুন",
     editProductSubtitle: "পণ্যের বিবরণ এবং মূল্য আপডেট করুন।",
+    addToCart: "কার্টে যোগ করুন",
+    addedToCart: "যোগ হয়েছে!",
+    viewDetails: "বিবরণ দেখুন",
+
+    // Cart Drawer
+    yourCart: "আপনার শপিং কার্ট",
+    cartEmpty: "আপনার কার্ট খালি",
+    startShopping: "কার্টে পণ্য যোগ করতে আমাদের ক্যাটালগ দেখুন।",
+    subtotal: "সর্বমোট মূল্য",
+    shippingCalculated: "চেকআউটে শিপিং চার্জ যুক্ত হবে",
+    proceedToCheckout: "চেকআউট নিশ্চিত করুন",
+    clearCart: "কার্ট খালি করুন",
+
+    // Checkout Page
+    checkoutTitle: "চেকআউট ও অর্ডারের বিবরণ",
+    contactInfo: "যোগাযোগের তথ্য",
+    fullName: "আপনার পুরো নাম",
+    phoneNumber: "মোবাইল নম্বর",
+    shippingAddress: "ডেলিভারি ঠিকানা",
+    districtCity: "জেলা / শহর",
+    deliveryNotes: "ডেলিভারি নোট (ঐচ্ছিক)",
+    paymentMethod: "পেমেন্ট মাধ্যম",
+    cashOnDelivery: "ক্যাশ অন ডেলিভারি",
+    cashOnDeliveryDesc: "পণ্য হাতে পেয়ে নগদে টাকা পরিশোধ করুন",
+    digitalPayment: "বিকাশ / নগদ / মোবাইল ব্যাংকিং",
+    digitalPaymentDesc: "আমাদের অফিসিয়াল মার্চেন্ট নম্বরে টাকা পাঠান",
+    orderSummary: "অর্ডারের সারসংক্ষেপ",
+    placeOrder: "অর্ডার কনফার্ম করুন",
+    placingOrder: "প্রসেসিং হচ্ছে...",
+    orderSuccessTitle: "অর্ডার সফলভাবে সম্পন্ন হয়েছে!",
+    orderSuccessDesc: "আপনার অর্ডারের জন্য ধন্যবাদ। আমাদের টিম শীঘ্রই আপনাকে কল করে ডেলিভারি নিশ্চিত করবে।",
+    backToHome: "হোমপেজে ফিরে যান",
 
     // Users Page & Table
     usersTitle: "ব্যবহারকারী ও টিম",
@@ -162,8 +276,8 @@ export const translations = {
     statusInactive: "নিষ্ক্রিয়",
 
     // Blogs Page & Table
-    blogPostsTitle: "ব্লগ পোস্টসমূহ",
-    blogPostsSubtitle: "আপনার নিবন্ধ, খবর এবং আপডেট পরিচালনা করুন।",
+    blogPostsTitle: "ব্লগ পোস্ট ও নিবন্ধসমূহ",
+    blogPostsSubtitle: "বিশেষজ্ঞদের কাছ থেকে খবর, মৎস্য চাষের গাইড এবং পরামর্শ পড়ুন।",
     addNewBlog: "নতুন ব্লগ যোগ করুন",
     noBlogPostsYet: "এখনও কোনো ব্লগ পোস্ট নেই।",
     clickToCreateBlog: 'আপনার প্রথম নিবন্ধ লিখতে "নতুন ব্লগ যোগ করুন" এ ক্লিক করুন।',
@@ -202,5 +316,6 @@ export const translations = {
 } as const;
 
 export type TranslationKey = keyof typeof translations.en;
+
 
 

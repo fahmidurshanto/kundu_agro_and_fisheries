@@ -20,9 +20,9 @@ export function DashboardContent({
   const { t } = useLanguage();
 
   const stats: Stat[] = [
-    { key: "statProducts", value: String(productCount), href: "/admin/products" },
-    { key: "statUsers", value: String(userCount), href: "/admin/users" },
-    { key: "statOrders", value: "0", href: "#" },
+    { key: "products", value: String(productCount), href: "/admin/products" },
+    { key: "users", value: String(userCount), href: "/admin/users" },
+    { key: "productsTitle", value: "0", href: "#" },
   ];
 
   return (
@@ -30,7 +30,7 @@ export function DashboardContent({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            {t("dashboardTitle")}
+            {t("dashboard")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {t("dashboardSubtitle")}
@@ -61,3 +61,4 @@ export function DashboardContent({
     </div>
   );
 }
+
