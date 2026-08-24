@@ -49,7 +49,7 @@ export function BlogForm({ blog }: BlogFormProps) {
       action={isEditing ? updateAction : createAction}
       className="space-y-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
     >
-      {isEditing && <input type="hidden" name="id" value={blog.id} />}
+      {blog && <input type="hidden" name="id" value={blog.id} />}
 
       {error && (
         <div className="rounded-xl bg-red-50 p-4 text-sm text-red-700">
