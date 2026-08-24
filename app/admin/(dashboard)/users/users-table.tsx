@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Modal } from "@/app/components/modal";
+import { useLanguage } from "@/app/components/language-context";
+import { TranslationKey } from "@/lib/translations";
 import type { User, UserRole, UserStatus } from "@/lib/users";
 
 function getInitials(name: string): string {
@@ -12,8 +14,8 @@ function getInitials(name: string): string {
   return name.slice(0, 2).toUpperCase();
 }
 
-function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString("en-GB", {
+function formatDate(value: string, locale: string): string {
+  return new Date(value).toLocaleDateString(locale, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -41,6 +43,18 @@ function getStatusBadgeColor(status: UserStatus): string {
     : "bg-gray-100 text-gray-600 border-gray-200";
 }
 
+const roleTranslationKeys: Record<UserRole, TranslationKey> = {
+  Admin: "roleAdmin",
+  Manager: "roleManager",
+  Staff: "roleStaff",
+  Customer: "roleCustomer",
+};
+
+const statusTranslationKeys: Record<UserStatus, TranslationKey> = {
+  Active: "statusActive",
+  Inactive: "statusInactive",
+};
+
 // ─── Reusable User Detail Modal ──────────────────────────────────────────────
 function UserDetailModal({
   user,
@@ -49,8 +63,11 @@ function UserDetailModal({
   user: User;
   onClose: () => void;
 }) {
+  const { t, language } = useLanguage();
+  const locale = language === "bn" ? "bn-BD" : "en-GB";
+
   return (
-    <Modal isOpen={true} onClose={onClose} title="User Details" maxWidth="md">
+    <Modal isOpen={true} onClose={onClose} title={t("userDetails")} maxWidth="md">
       {/* Avatar + name */}
       <div className="flex items-center gap-4">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xl font-bold text-primary">
@@ -69,7 +86,7 @@ function UserDetailModal({
       <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1">
           <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Role
+            {t("roleLabel")}
           </dt>
           <dd>
             <span
@@ -77,14 +94,14 @@ function UserDetailModal({
                 user.role
               )}`}
             >
-              {user.role}
+              {t(roleTranslationKeys[user.role] || "tableRole")}
             </span>
           </dd>
         </div>
 
         <div className="flex flex-col gap-1">
           <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Status
+            {t("statusLabel")}
           </dt>
           <dd>
             <span
@@ -97,30 +114,30 @@ function UserDetailModal({
                   user.status === "Active" ? "bg-emerald-500" : "bg-gray-400"
                 }`}
               />
-              {user.status}
+              {t(statusTranslationKeys[user.status] || "tableStatus")}
             </span>
           </dd>
         </div>
 
         <div className="flex flex-col gap-1">
           <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Phone
+            {t("phoneLabel")}
           </dt>
           <dd className="text-sm text-foreground">{user.phone || "—"}</dd>
         </div>
 
         <div className="flex flex-col gap-1">
           <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Joined Date
+            {t("joinedDateLabel")}
           </dt>
           <dd className="text-sm text-foreground">
-            {formatDate(user.createdAt)}
+            {formatDate(user.createdAt, locale)}
           </dd>
         </div>
 
         <div className="col-span-full flex flex-col gap-1">
           <dt className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            User ID
+            {t("userIdLabel")}
           </dt>
           <dd className="truncate rounded-lg bg-gray-50 px-3 py-2 font-mono text-xs text-muted-foreground">
             {user.id}
@@ -134,13 +151,15 @@ function UserDetailModal({
 // ─── Interactive Users Table ──────────────────────────────────────────────────
 export function UsersTable({ users }: { users: User[] }) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const { t, language } = useLanguage();
+  const locale = language === "bn" ? "bn-BD" : "en-GB";
 
   if (users.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-16 text-center">
-        <p className="text-sm font-medium text-foreground">No users found.</p>
+        <p className="text-sm font-medium text-foreground">{t("noUsersFound")}</p>
         <p className="max-w-sm text-sm text-muted-foreground">
-          There are currently no registered users in your database.
+          {t("noUsersDatabase")}
         </p>
       </div>
     );
@@ -154,19 +173,19 @@ export function UsersTable({ users }: { users: User[] }) {
             <thead className="border-b border-gray-100 bg-gray-50/50 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th scope="col" className="px-6 py-4">
-                  User
+                  {t("tableUser")}
                 </th>
                 <th scope="col" className="px-6 py-4">
-                  Role
+                  {t("tableRole")}
                 </th>
                 <th scope="col" className="px-6 py-4">
-                  Status
+                  {t("tableStatus")}
                 </th>
                 <th scope="col" className="px-6 py-4">
-                  Phone
+                  {t("tablePhone")}
                 </th>
                 <th scope="col" className="px-6 py-4">
-                  Joined Date
+                  {t("tableJoinedDate")}
                 </th>
               </tr>
             </thead>
@@ -199,7 +218,7 @@ export function UsersTable({ users }: { users: User[] }) {
                         user.role
                       )}`}
                     >
-                      {user.role}
+                      {t(roleTranslationKeys[user.role] || "tableRole")}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -215,14 +234,14 @@ export function UsersTable({ users }: { users: User[] }) {
                             : "bg-gray-400"
                         }`}
                       />
-                      {user.status}
+                      {t(statusTranslationKeys[user.status] || "tableStatus")}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-muted-foreground">
                     {user.phone || "—"}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-muted-foreground">
-                    {formatDate(user.createdAt)}
+                    {formatDate(user.createdAt, locale)}
                   </td>
                 </tr>
               ))}
@@ -241,3 +260,4 @@ export function UsersTable({ users }: { users: User[] }) {
     </>
   );
 }
+

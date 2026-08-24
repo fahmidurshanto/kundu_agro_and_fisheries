@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useLanguage } from "@/app/components/language-context";
 import { deleteProduct, type DeleteProductState } from "./actions";
 
 const initialState: DeleteProductState = {};
@@ -16,6 +17,7 @@ export function DeleteProductButton({
     deleteProduct,
     initialState
   );
+  const { t } = useLanguage();
 
   if (state.success) return null;
 
@@ -37,7 +39,7 @@ export function DeleteProductButton({
         disabled={pending}
         className="cursor-pointer rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:border-red-300 hover:bg-red-50 disabled:opacity-60"
       >
-        {pending ? "Deleting…" : "Delete"}
+        {pending ? t("deleting") : t("delete")}
       </button>
       {state.error ? (
         <p role="alert" className="max-w-48 text-right text-xs text-red-600">
@@ -47,3 +49,4 @@ export function DeleteProductButton({
     </form>
   );
 }
+

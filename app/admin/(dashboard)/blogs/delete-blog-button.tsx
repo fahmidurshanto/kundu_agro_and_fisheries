@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useLanguage } from "@/app/components/language-context";
 import { deleteBlog, type DeleteBlogState } from "./actions";
 
 type DeleteBlogButtonProps = {
@@ -12,6 +13,7 @@ const initialState: DeleteBlogState = {};
 
 export function DeleteBlogButton({ blogId, blogTitle }: DeleteBlogButtonProps) {
   const [state, formAction, isPending] = useActionState(deleteBlog, initialState);
+  const { t } = useLanguage();
 
   return (
     <form action={formAction} className="inline-block">
@@ -26,7 +28,7 @@ export function DeleteBlogButton({ blogId, blogTitle }: DeleteBlogButtonProps) {
         }}
         className="cursor-pointer text-xs font-medium text-red-600 hover:text-red-800 disabled:opacity-50"
       >
-        {isPending ? "Deleting..." : "Delete"}
+        {isPending ? t("deleting") : t("delete")}
       </button>
       {state.error && (
         <p className="mt-1 text-xs text-red-500">{state.error}</p>
@@ -34,3 +36,4 @@ export function DeleteBlogButton({ blogId, blogTitle }: DeleteBlogButtonProps) {
     </form>
   );
 }
+

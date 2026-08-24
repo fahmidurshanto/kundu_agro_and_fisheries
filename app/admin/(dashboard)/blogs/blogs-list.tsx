@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { type Blog } from "@/lib/blog-types";
+import { useLanguage } from "@/app/components/language-context";
 import { DeleteBlogButton } from "./delete-blog-button";
 import { BlogDetailModal } from "./blog-detail-modal";
 
@@ -13,19 +14,20 @@ type BlogsListProps = {
 
 export function BlogsList({ blogs }: BlogsListProps) {
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
+  const { t, language } = useLanguage();
 
   if (blogs.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-12 text-center">
-        <p className="text-sm font-medium text-gray-500">No blog posts yet.</p>
+        <p className="text-sm font-medium text-gray-500">{t("noBlogPostsYet")}</p>
         <p className="mt-1 text-xs text-gray-400">
-          Click "Add New Blog" to write your first article.
+          {t("clickToCreateBlog")}
         </p>
         <Link
           href="/admin/blogs/new"
           className="mt-4 inline-block rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white"
         >
-          Create Blog
+          {t("createBlog")}
         </Link>
       </div>
     );
@@ -39,16 +41,16 @@ export function BlogsList({ blogs }: BlogsListProps) {
             <thead className="border-b border-gray-100 bg-gray-50/50 text-xs uppercase text-gray-400">
               <tr>
                 <th scope="col" className="px-6 py-4">
-                  Blog
+                  {t("tableBlog")}
                 </th>
                 <th scope="col" className="px-6 py-4">
-                  Video
+                  {t("tableVideo")}
                 </th>
                 <th scope="col" className="px-6 py-4">
-                  Published
+                  {t("tablePublished")}
                 </th>
                 <th scope="col" className="px-6 py-4 text-right">
-                  Actions
+                  {t("tableActions")}
                 </th>
               </tr>
             </thead>
@@ -71,7 +73,7 @@ export function BlogsList({ blogs }: BlogsListProps) {
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center text-xs text-gray-400">
-                            No image
+                            {t("none")}
                           </div>
                         )}
                       </div>
@@ -88,18 +90,21 @@ export function BlogsList({ blogs }: BlogsListProps) {
                   <td className="px-6 py-4 text-xs">
                     {blog.videoUrl ? (
                       <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
-                        Included
+                        {t("included")}
                       </span>
                     ) : (
-                      <span className="text-gray-400">None</span>
+                      <span className="text-gray-400">{t("none")}</span>
                     )}
                   </td>
                   <td className="px-6 py-4 text-xs text-gray-500 whitespace-nowrap">
-                    {new Date(blog.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
+                    {new Date(blog.createdAt).toLocaleDateString(
+                      language === "bn" ? "bn-BD" : "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
                   </td>
                   <td
                     className="px-6 py-4 text-right whitespace-nowrap space-x-3"
@@ -110,13 +115,13 @@ export function BlogsList({ blogs }: BlogsListProps) {
                       onClick={() => setSelectedBlog(blog)}
                       className="text-xs font-medium text-gray-600 hover:text-gray-900 transition-colors"
                     >
-                      View
+                      {t("view")}
                     </button>
                     <Link
                       href={`/admin/blogs/${blog.id}`}
                       className="text-xs font-medium text-primary hover:underline"
                     >
-                      Edit
+                      {t("edit")}
                     </Link>
                     <DeleteBlogButton blogId={blog.id} blogTitle={blog.title} />
                   </td>
@@ -134,3 +139,4 @@ export function BlogsList({ blogs }: BlogsListProps) {
     </>
   );
 }
+

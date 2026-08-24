@@ -3,20 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/app/components/language-context";
+import { LanguageToggle } from "@/app/components/language-toggle";
+import { TranslationKey } from "@/lib/translations";
 import { logout } from "./actions";
 
-const navLinks = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/products", label: "Products" },
-  { href: "/admin/blogs", label: "Blogs" },
-  { href: "/admin/users", label: "Users" },
-  { href: "/admin/products/new", label: "Add Product" },
-  { href: "/admin/blogs/new", label: "Add Blog" },
+const navLinks: { href: string; key: TranslationKey }[] = [
+  { href: "/admin", key: "dashboard" },
+  { href: "/admin/products", key: "products" },
+  { href: "/admin/blogs", key: "blogs" },
+  { href: "/admin/users", key: "users" },
+  { href: "/admin/products/new", key: "addProduct" },
+  { href: "/admin/blogs/new", key: "addBlog" },
 ];
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   // Close drawer on route change
   useEffect(() => {
@@ -82,9 +86,12 @@ export function MobileNav() {
       >
         {/* Drawer header */}
         <div className="flex h-16 items-center justify-between border-b border-gray-100 px-5">
-          <span className="text-sm font-semibold tracking-tight text-foreground">
-            Menu
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-semibold tracking-tight text-foreground">
+              {t("menu")}
+            </span>
+            <LanguageToggle />
+          </div>
           <button
             type="button"
             aria-label="Close menu"
@@ -124,7 +131,7 @@ export function MobileNav() {
                     : "text-muted-foreground hover:bg-gray-50 hover:text-foreground"
                 }`}
               >
-                {link.label}
+                {t(link.key)}
               </Link>
             );
           })}
@@ -137,7 +144,7 @@ export function MobileNav() {
               type="submit"
               className="w-full cursor-pointer rounded-xl border border-gray-200 px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:border-red-200 hover:bg-red-50"
             >
-              Log out
+              {t("logout")}
             </button>
           </form>
         </div>
@@ -145,3 +152,4 @@ export function MobileNav() {
     </>
   );
 }
+
