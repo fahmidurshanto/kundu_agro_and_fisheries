@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 import { logout } from "./actions";
+import { MobileNav } from "./mobile-nav";
 
 export default async function DashboardLayout({
   children,
@@ -20,8 +21,9 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
-      <header className="border-b border-gray-100 bg-white">
+      <header className="sticky top-0 z-30 border-b border-gray-100 bg-white">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4">
+          {/* Brand */}
           <div className="flex items-center gap-3">
             <Image
               src="/kunduAgro.png"
@@ -34,7 +36,9 @@ export default async function DashboardLayout({
               Admin panel
             </span>
           </div>
-          <div className="flex items-center gap-5">
+
+          {/* Desktop Nav — hidden on mobile */}
+          <div className="hidden items-center gap-5 md:flex">
             <nav className="flex items-center gap-4">
               <Link
                 href="/admin"
@@ -70,6 +74,9 @@ export default async function DashboardLayout({
               </button>
             </form>
           </div>
+
+          {/* Mobile Hamburger + Drawer — visible only on mobile */}
+          <MobileNav />
         </div>
       </header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
