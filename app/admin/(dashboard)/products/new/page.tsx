@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ProductForm } from "./product-form";
 
 export const metadata: Metadata = {
@@ -7,17 +8,23 @@ export const metadata: Metadata = {
 
 export default function AddProductPage() {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+        <Link
+          href="/admin/products"
+          className="text-xs font-medium text-muted-foreground hover:text-primary"
+        >
+          ← Back to Products
+        </Link>
+        <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
           Add Product
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Publish a new product to your store catalog.
         </p>
       </div>
 
-      <div className="w-full max-w-2xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
         <ProductForm />
       </div>
     </div>

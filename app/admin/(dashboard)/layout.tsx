@@ -53,6 +53,12 @@ export default async function DashboardLayout({
                 Products
               </Link>
               <Link
+                href="/admin/blogs"
+                className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              >
+                Blogs
+              </Link>
+              <Link
                 href="/admin/users"
                 className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
               >
@@ -63,6 +69,12 @@ export default async function DashboardLayout({
                 className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
               >
                 Add Product
+              </Link>
+              <Link
+                href="/admin/blogs/new"
+                className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              >
+                Add Blog
               </Link>
             </nav>
             <form action={logout}>

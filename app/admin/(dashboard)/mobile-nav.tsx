@@ -8,8 +8,10 @@ import { logout } from "./actions";
 const navLinks = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/products", label: "Products" },
+  { href: "/admin/blogs", label: "Blogs" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/products/new", label: "Add Product" },
+  { href: "/admin/blogs/new", label: "Add Blog" },
 ];
 
 export function MobileNav() {
