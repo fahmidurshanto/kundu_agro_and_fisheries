@@ -24,6 +24,17 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+/* Global transparent greenish overlay on top of white background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(76, 154, 82, 0.08);
+  pointer-events: none;
+  z-index: 0;
 }
 
 @keyframes modal-in {
