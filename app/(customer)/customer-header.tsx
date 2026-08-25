@@ -12,6 +12,7 @@ import { TranslationKey } from "@/lib/translations";
 const navLinks: { href: string; key: TranslationKey }[] = [
   { href: "/", key: "home" },
   { href: "/products", key: "shop" },
+  { href: "/orders", key: "myOrders" },
   { href: "/blogs", key: "blogs" },
   { href: "/admin", key: "adminPanel" },
 ];

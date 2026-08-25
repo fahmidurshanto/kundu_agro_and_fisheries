@@ -36,6 +36,12 @@ export function HeaderNav() {
           {t("users")}
         </Link>
         <Link
+          href="/admin/orders"
+          className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+        >
+          {t("orders")}
+        </Link>
+        <Link
           href="/admin/products/new"
           className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
         >

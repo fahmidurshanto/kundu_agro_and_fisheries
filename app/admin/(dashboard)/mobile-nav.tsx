@@ -13,6 +13,7 @@ const navLinks: { href: string; key: TranslationKey }[] = [
   { href: "/admin/products", key: "products" },
   { href: "/admin/blogs", key: "blogs" },
   { href: "/admin/users", key: "users" },
+  { href: "/admin/orders", key: "orders" },
   { href: "/admin/products/new", key: "addProduct" },
   { href: "/admin/blogs/new", key: "addBlog" },
 ];
