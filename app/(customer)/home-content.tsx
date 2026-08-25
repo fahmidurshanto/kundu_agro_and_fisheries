@@ -27,27 +27,39 @@ export function HomeContent({
   return (
     <div className="space-y-16 pb-16">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pt-12 pb-16">
-        <div className="mx-auto max-w-6xl px-4 text-center">
-          <span className="inline-flex items-center rounded-full bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+      <section className="relative overflow-hidden pt-16 pb-20 rounded-3xl mx-4 my-2 shadow-xl border border-gray-100">
+        {/* Background Image & Overlay */}
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="/Gemini_Generated_Image_dxkrqfdxkrqfdxkr.jpg"
+            alt="Kundu Agro and Fisheries Hero Banner"
+            fill
+            priority
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-950/85 via-gray-900/70 to-gray-950/80 backdrop-blur-[1px]" />
+        </div>
+
+        <div className="mx-auto max-w-6xl px-4 text-center relative z-10">
+          <span className="inline-flex items-center rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 px-4 py-1.5 text-xs font-bold text-emerald-300 shadow-sm">
             {t("heroBadge")}
           </span>
-          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl max-w-3xl mx-auto leading-tight">
+          <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl max-w-3xl mx-auto leading-tight drop-shadow-md">
             {t("heroTitle")}
           </h1>
-          <p className="mt-4 text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 text-base text-gray-200 max-w-2xl mx-auto leading-relaxed drop-shadow">
             {t("heroSubtitle")}
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Link
               href="/products"
-              className="rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all"
+              className="rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary/30 hover:bg-primary/90 hover:scale-[1.02] transition-all"
             >
               {t("shopNow")}
             </Link>
             <Link
               href="/blogs"
-              className="rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+              className="rounded-xl border border-white/20 bg-white/10 backdrop-blur-md px-6 py-3.5 text-sm font-semibold text-white hover:bg-white/20 hover:scale-[1.02] transition-all"
             >
               {t("exploreBlogs")}
             </Link>
