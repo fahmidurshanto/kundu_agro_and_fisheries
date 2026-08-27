@@ -2,17 +2,25 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { type Product } from "@/lib/product-types";
+import { type Product, PRODUCT_CATEGORIES } from "@/lib/product-types";
 import { useLanguage } from "../components/language-context";
 import { useCart } from "../components/cart-context";
 
-export function ShopContent({ products }: { products: Product[] }) {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+export function ShopContent({
+  products,
+  initialCategory = "all",
+}: {
+  products: Product[];
+  initialCategory?: string;
+}) {
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { addToCart } = useCart();
 
-  const categories = Array.from(new Set(products.map((p) => p.category)));
+  const categories = Array.from(
+    new Set([...PRODUCT_CATEGORIES, ...products.map((p) => p.category)])
+  );
 
   const filteredProducts = products.filter((p) => {
     const matchesCategory =

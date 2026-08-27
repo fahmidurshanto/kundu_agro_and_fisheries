@@ -2,10 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type Product } from "@/lib/product-types";
+import { type Product, PRODUCT_CATEGORIES } from "@/lib/product-types";
 import { type Blog } from "@/lib/blog-types";
 import { useLanguage } from "../components/language-context";
 import { useCart } from "../components/cart-context";
+
+function getCategoryIcon(categoryName: string): string {
+  const lower = categoryName.toLowerCase();
+  if (lower.includes("seed") || lower.includes("পোনা")) return "🐠";
+  if (lower.includes("fish") && (lower.includes("medicine") || lower.includes("chemical"))) return "🧪";
+  if (lower.includes("fish")) return "🐟";
+  if (lower.includes("dairy") && lower.includes("medicine")) return "💊";
+  if (lower.includes("dairy")) return "🥛";
+  if (lower.includes("food")) return "🌾";
+  if (lower.includes("feed") || lower.includes("material") || lower.includes("raw")) return "🌱";
+  if (lower.includes("import")) return "📦";
+  return "🏷️";
+}
 
 export function HomeContent({
   featuredProducts,
@@ -17,12 +30,9 @@ export function HomeContent({
   const { t, language } = useLanguage();
   const { addToCart } = useCart();
 
-  const categories = [
-    { name: t("freshFish"), desc: t("freshFishDesc"), icon: "🐟" },
-    { name: t("fishFeed"), desc: t("fishFeedDesc"), icon: "🌾" },
-    { name: t("fertilizer"), desc: t("fertilizerDesc"), icon: "🌱" },
-    { name: t("equipment"), desc: t("equipmentDesc"), icon: "⚙️" },
-  ];
+  const allCategories = Array.from(
+    new Set([...PRODUCT_CATEGORIES, ...featuredProducts.map((p) => p.category)])
+  );
 
   return (
     <div className="space-y-16 pb-16">
@@ -72,20 +82,32 @@ export function HomeContent({
         <h2 className="text-xl font-bold tracking-tight text-gray-900 mb-6">
           {t("featuredCategories")}
         </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {categories.map((cat, i) => (
-            <Link
-              key={i}
-              href="/products"
-              className="group rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
-            >
-              <span className="text-3xl">{cat.icon}</span>
-              <h3 className="mt-3 text-base font-bold text-gray-900 group-hover:text-primary transition-colors">
-                {cat.name}
-              </h3>
-              <p className="mt-1 text-xs text-gray-500">{cat.desc}</p>
-            </Link>
-          ))}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {allCategories.map((cat) => {
+            const count = featuredProducts.filter(
+              (p) => p.category === cat
+            ).length;
+            const icon = getCategoryIcon(cat);
+            return (
+              <Link
+                key={cat}
+                href={`/products?category=${encodeURIComponent(cat)}`}
+                className="group flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md"
+              >
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-2xl group-hover:bg-primary group-hover:text-white transition-colors">
+                  {icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-bold text-gray-900 group-hover:text-primary transition-colors truncate">
+                    {cat}
+                  </h3>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {count} {count === 1 ? "Product" : "Products"}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

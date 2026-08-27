@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "../components/language-context";
+import { PRODUCT_CATEGORIES } from "@/lib/product-types";
 
 export function CustomerFooter() {
   const { t } = useLanguage();
@@ -63,10 +64,16 @@ export function CustomerFooter() {
               {t("featuredCategories")}
             </h4>
             <ul className="mt-3 space-y-2 text-xs text-gray-600">
-              <li>{t("freshFish")}</li>
-              <li>{t("fishFeed")}</li>
-              <li>{t("fertilizer")}</li>
-              <li>{t("equipment")}</li>
+              {PRODUCT_CATEGORIES.slice(0, 5).map((cat) => (
+                <li key={cat}>
+                  <Link
+                    href={`/products?category=${encodeURIComponent(cat)}`}
+                    className="hover:text-primary transition-colors line-clamp-1"
+                  >
+                    {cat}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

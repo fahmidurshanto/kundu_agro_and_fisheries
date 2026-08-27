@@ -12,6 +12,7 @@ export type Product = {
 };
 
 export const PRODUCT_CATEGORIES = [
+  "Fish seed / মাছের পোনা",
   "Fisheries medicine / chemical",
   "Dairy medicine",
   "Human food",
