@@ -147,11 +147,10 @@ export function ShopContent({
             setSelectedCategory("all");
             setSelectedDistrict("all");
           }}
-          className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-            selectedCategory === "all"
-              ? "bg-primary text-white shadow-sm"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-          }`}
+          className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${selectedCategory === "all"
+            ? "bg-primary text-white shadow-sm"
+            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
         >
           {t("allCategories")}
         </button>
@@ -160,11 +159,10 @@ export function ShopContent({
             key={cat}
             type="button"
             onClick={() => setSelectedCategory(cat)}
-            className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-              selectedCategory === cat
-                ? "bg-primary text-white shadow-sm"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
+            className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${selectedCategory === cat
+              ? "bg-primary text-white shadow-sm"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
           >
             {cat}
           </button>
@@ -239,9 +237,8 @@ export function ShopContent({
                         : "Selected"}
                     </span>
                     <svg
-                      className={`w-4 h-4 transition-transform ${
-                        isDistrictDropdownOpen ? "rotate-180" : ""
-                      }`}
+                      className={`w-4 h-4 transition-transform ${isDistrictDropdownOpen ? "rotate-180" : ""
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -318,11 +315,10 @@ export function ShopContent({
                             setSelectedDistrict("all");
                             setIsDistrictDropdownOpen(false);
                           }}
-                          className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${
-                            selectedDistrict === "all"
-                              ? "bg-emerald-700 text-white"
-                              : "hover:bg-emerald-50 text-gray-800"
-                          }`}
+                          className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${selectedDistrict === "all"
+                            ? "bg-emerald-700 text-white"
+                            : "hover:bg-emerald-50 text-gray-800"
+                            }`}
                         >
                           <span>{language === "bn" ? "সকল জেলা (All Districts)" : "All Districts of Bangladesh"}</span>
                           {selectedDistrict === "all" && <span>✓</span>}
@@ -346,22 +342,20 @@ export function ShopContent({
                                   setSelectedDistrict(district);
                                   setIsDistrictDropdownOpen(false);
                                 }}
-                                className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs transition-colors cursor-pointer ${
-                                  selectedDistrict === district
-                                    ? "bg-emerald-700 text-white font-bold"
-                                    : sellerCount > 0
+                                className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs transition-colors cursor-pointer ${selectedDistrict === district
+                                  ? "bg-emerald-700 text-white font-bold"
+                                  : sellerCount > 0
                                     ? "bg-emerald-50/80 text-emerald-950 font-bold hover:bg-emerald-100"
                                     : "hover:bg-gray-100 text-gray-700"
-                                }`}
+                                  }`}
                               >
                                 <span>{district}</span>
                                 {sellerCount > 0 && (
                                   <span
-                                    className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md ${
-                                      selectedDistrict === district
-                                        ? "bg-white text-emerald-900"
-                                        : "bg-emerald-200/80 text-emerald-900"
-                                    }`}
+                                    className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md ${selectedDistrict === district
+                                      ? "bg-white text-emerald-900"
+                                      : "bg-emerald-200/80 text-emerald-900"
+                                      }`}
                                   >
                                     {sellerCount} {language === "bn" ? "বিক্রেতা" : "Seller"}
                                   </span>
@@ -410,9 +404,8 @@ export function ShopContent({
             return (
               <div
                 key={product.id}
-                className={`group flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-all hover:shadow-md ${
-                  isFishSeed ? "border-emerald-100/80 hover:border-emerald-300" : "border-gray-100"
-                }`}
+                className={`group flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-all hover:shadow-md ${isFishSeed ? "border-emerald-100/80 hover:border-emerald-300" : "border-gray-100"
+                  }`}
               >
                 {/* Product Thumbnail */}
                 <div className="relative h-52 w-full overflow-hidden bg-gray-50">
@@ -686,8 +679,8 @@ export function ShopContent({
             </div>
           </div>
 
-          {/* Form Action Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+          {/* Form Action Buttons - Sticky at bottom */}
+          <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm flex items-center justify-end gap-3 pt-3 pb-1 border-t border-gray-100 z-10">
             <button
               type="button"
               onClick={() => setIsAddModalOpen(false)}
@@ -705,8 +698,8 @@ export function ShopContent({
                   ? "যোগ করা হচ্ছে..."
                   : "Saving..."
                 : language === "bn"
-                ? "পণ্য প্রকাশ করুন"
-                : "Publish Fish Seed"}
+                  ? "পণ্য প্রকাশ করুন"
+                  : "Publish Fish Seed"}
             </button>
           </div>
         </form>

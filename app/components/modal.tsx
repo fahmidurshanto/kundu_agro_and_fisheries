@@ -67,11 +67,11 @@ export function Modal({
       {/* Panel */}
       <div
         ref={panelRef}
-        className={`relative z-10 w-full ${maxWidthClasses[maxWidth]} animate-modal-in rounded-2xl bg-white shadow-2xl`}
+        className={`relative z-10 w-full ${maxWidthClasses[maxWidth]} max-h-[90vh] flex flex-col animate-modal-in rounded-2xl bg-white shadow-2xl overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4 flex-shrink-0 bg-white">
           {title ? (
             <h2 className="text-base font-semibold text-foreground">{title}</h2>
           ) : (
@@ -99,8 +99,8 @@ export function Modal({
           </button>
         </div>
 
-        {/* Content */}
-        <div className="px-6 py-5">{children}</div>
+        {/* Content - Vertically Scrollable */}
+        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
     </div>
   );
