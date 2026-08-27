@@ -30,11 +30,11 @@ export default async function DashboardLayout({
             {/* Brand */}
             <div className="flex items-center gap-3">
               <Image
-                src="/kunduAgro.png"
+                src="/kundu_logo.png"
                 alt="Kundu Agro and Fisheries logo"
                 width={36}
                 height={36}
-                className="rounded-lg"
+                className="rounded-lg object-contain"
               />
               <BrandTitle />
             </div>

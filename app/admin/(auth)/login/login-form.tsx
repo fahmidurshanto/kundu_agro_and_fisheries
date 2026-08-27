@@ -14,12 +14,12 @@ export function LoginForm() {
     <div className="w-full max-w-sm">
       <div className="flex flex-col items-center gap-3">
         <Image
-          src="/kunduAgro.png"
+          src="/kundu_logo.png"
           alt="Kundu Agro and Fisheries logo"
           width={80}
           height={80}
           priority
-          className="rounded-xl"
+          className="rounded-xl object-contain"
         />
         <div className="text-center">
           <h1 className="text-2xl font-bold tracking-tight text-foreground">

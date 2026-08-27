@@ -15,6 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Kundu Agro and Fisheries",
   description: "Kundu Agro and Fisheries",
+  icons: {
+    icon: "/kundu_logo.png",
+    shortcut: "/kundu_logo.png",
+    apple: "/kundu_logo.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

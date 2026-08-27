@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "../components/language-context";
 
@@ -12,7 +13,16 @@ export function CustomerFooter() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand Info */}
           <div>
-            <h3 className="text-base font-bold text-gray-900">{t("brandName")}</h3>
+            <div className="flex items-center gap-2.5 mb-2">
+              <Image
+                src="/kundu_logo.png"
+                alt="Kundu Agro logo"
+                width={32}
+                height={32}
+                className="rounded-lg object-contain"
+              />
+              <h3 className="text-base font-bold text-gray-900">{t("brandName")}</h3>
+            </div>
             <p className="mt-2 text-xs text-gray-500 leading-relaxed">
               {t("heroSubtitle")}
             </p>

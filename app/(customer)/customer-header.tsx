@@ -29,11 +29,11 @@ export function CustomerHeader() {
         {/* Brand Logo & Title */}
         <Link href="/" className="flex items-center gap-3 group">
           <Image
-            src="/kunduAgro.png"
+            src="/kundu_logo.png"
             alt="Kundu Agro and Fisheries logo"
-            width={38}
-            height={38}
-            className="rounded-xl shadow-sm transition-transform group-hover:scale-105"
+            width={40}
+            height={40}
+            className="rounded-xl shadow-sm object-contain transition-transform group-hover:scale-105"
           />
           <div className="flex flex-col">
             <span className="text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
