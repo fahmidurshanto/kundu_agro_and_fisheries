@@ -1,0 +1,46 @@
+[
+  {
+    "id": "inv_101",
+    "sellerId": "seller_101",
+    "speciesName": "Rui (রুই পোনা)",
+    "sizeCategory": "1.5 - 2.0 inch",
+    "ageDays": 25,
+    "pricePerThousand": 1200,
+    "stockQuantity": "200,000 fry",
+    "isAvailable": true,
+    "updatedAt": "2026-08-28T10:00:00.000Z"
+  },
+  {
+    "id": "inv_102",
+    "sellerId": "seller_101",
+    "speciesName": "Monosex Tilapia (মোনোসেক্স তেলাপিয়া)",
+    "sizeCategory": "1.0 - 1.5 inch",
+    "ageDays": 20,
+    "pricePerThousand": 900,
+    "stockQuantity": "150,000 fry",
+    "isAvailable": true,
+    "updatedAt": "2026-08-28T11:30:00.000Z"
+  },
+  {
+    "id": "inv_103",
+    "sellerId": "seller_101",
+    "speciesName": "Pabda (পাবদা পোনা)",
+    "sizeCategory": "2.0 inch",
+    "ageDays": 35,
+    "pricePerThousand": 2500,
+    "stockQuantity": "80,000 fry",
+    "isAvailable": true,
+    "updatedAt": "2026-08-27T15:00:00.000Z"
+  },
+  {
+    "id": "inv_104",
+    "sellerId": "seller_101",
+    "speciesName": "Katla (কাতলা পোনা)",
+    "sizeCategory": "2.5 - 3.0 inch",
+    "ageDays": 40,
+    "pricePerThousand": 1800,
+    "stockQuantity": "50,000 fry",
+    "isAvailable": false,
+    "updatedAt": "2026-08-25T09:15:00.000Z"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "inq_501",
+    "sellerId": "seller_101",
+    "farmerName": "Abdul Alim",
+    "phone": "+880 1819-334455",
+    "district": "Tangail",
+    "requestedSpecies": "Monosex Tilapia (মোনোসেক্স তেলাপিয়া)",
+    "requestedQuantity": "20,000 fry",
+    "message": "Looking for urgent delivery to Trishal border pond site.",
+    "status": "New",
+    "createdAt": "2026-08-29T07:30:00.000Z"
+  },
+  {
+    "id": "inq_502",
+    "sellerId": "seller_101",
+    "farmerName": "Rafiqul Islam",
+    "phone": "+880 1712-889900",
+    "district": "Mymensingh",
+    "requestedSpecies": "Rui (রুই পোনা)",
+    "requestedQuantity": "50,000 fry",
+    "message": "Need healthy fingerlings with transportation oxygen bag.",
+    "status": "Contacted",
+    "createdAt": "2026-08-28T14:20:00.000Z"
+  }
+]

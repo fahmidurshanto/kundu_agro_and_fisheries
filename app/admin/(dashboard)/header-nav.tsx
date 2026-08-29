@@ -24,6 +24,12 @@ export function HeaderNav() {
           {t("products")}
         </Link>
         <Link
+          href="/admin/sellers"
+          className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+        >
+          {t("sellers")}
+        </Link>
+        <Link
           href="/admin/blogs"
           className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
         >

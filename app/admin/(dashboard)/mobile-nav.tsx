@@ -11,6 +11,7 @@ import { logout } from "./actions";
 const navLinks: { href: string; key: TranslationKey }[] = [
   { href: "/admin", key: "dashboard" },
   { href: "/admin/products", key: "products" },
+  { href: "/admin/sellers", key: "sellers" },
   { href: "/admin/blogs", key: "blogs" },
   { href: "/admin/users", key: "users" },
   { href: "/admin/orders", key: "orders" },

@@ -203,11 +203,20 @@ Currently, the application operates as a Next.js App Router monolith with server
 
 ---
 
-## 4. File Upload & Media Storage Flow
+### 🐟 Fish Seed Seller Management Endpoints
 
-1. **Validation Rules**:
-   - Images: `image/jpeg`, `image/png`, `image/webp`, `image/avif` (Max 5MB)
-   - Videos: `video/mp4`, `video/webm`, `video/ogg` (Max 50MB)
-2. **Storage Resolution**:
-   - Primary: Multipart form-data handled directly by API endpoint, storing files in cloud storage (S3/Cloudinary) and returning public CDN URLs.
-   - Fallback: Direct local disk storage returning static server relative URLs (`/uploads/...`).
+#### `GET /api/sellers/fish-seed`
+- **Query Params**: `?district=Mymensingh&status=Verified&search=Rui`
+- **Response `200 OK`**: Array of `FishSeedSeller` objects
+
+#### `POST /api/sellers/fish-seed` (Protected)
+- **Body**: `{ "name", "hatcheryName", "phone", "district", "locationDetails", "fishTypes": ["Rui", "Katla"], "capacityPerMonth", "status" }`
+- **Response `201 Created`**: Created Seller object
+
+#### `PATCH /api/sellers/fish-seed/:id/status` (Protected)
+- **Body**: `{ "status": "Verified" | "Pending" | "Inactive" }`
+- **Response `200 OK`**: Updated Seller object
+
+#### `DELETE /api/sellers/fish-seed/:id` (Protected)
+- **Response `200 OK`**: `{ "success": true, "deletedId": "seller_101" }`
+

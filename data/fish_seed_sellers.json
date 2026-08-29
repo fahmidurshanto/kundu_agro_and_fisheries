@@ -1,0 +1,54 @@
+[
+  {
+    "id": "seller_101",
+    "name": "Mokbul Hossain",
+    "hatcheryName": "Padma Quality Fish Seed Hatchery",
+    "phone": "+880 1711-223344",
+    "district": "Mymensingh",
+    "locationDetails": "Trishal Road, Mymensingh Sadar",
+    "fishTypes": ["Rui", "Katla", "Pangasius", "Monosex Tilapia"],
+    "capacityPerMonth": "500,000 fry",
+    "status": "Verified",
+    "rating": 4.9,
+    "joinedDate": "2026-01-15T09:00:00.000Z"
+  },
+  {
+    "id": "seller_102",
+    "name": "Alimuddin Sarkar",
+    "hatcheryName": "Brahmaputra Breeding Farm & Hatchery",
+    "phone": "+880 1812-998877",
+    "district": "Bogura",
+    "locationDetails": "Sherpur Bypass, Bogura",
+    "fishTypes": ["Gulsha", "Pabda", "Shing", "Magur"],
+    "capacityPerMonth": "350,000 fry",
+    "status": "Verified",
+    "rating": 4.7,
+    "joinedDate": "2026-02-01T11:30:00.000Z"
+  },
+  {
+    "id": "seller_103",
+    "name": "Kamrul Islam",
+    "hatcheryName": "Deshbandhu Fish Fry Breeding Center",
+    "phone": "+880 1913-445566",
+    "district": "Jessore",
+    "locationDetails": "Chanchra Fisheries Zone, Jessore",
+    "fishTypes": ["Grass Carp", "Silver Carp", "Mrigal", "Rui"],
+    "capacityPerMonth": "800,000 fry",
+    "status": "Pending",
+    "rating": 4.5,
+    "joinedDate": "2026-02-20T14:10:00.000Z"
+  },
+  {
+    "id": "seller_104",
+    "name": "Farhana Begum",
+    "hatcheryName": "Rupali Fish Breeding Project",
+    "phone": "+880 1614-778899",
+    "district": "Rajshahi",
+    "locationDetails": "Godagari Fisheries Hub, Rajshahi",
+    "fishTypes": ["Monosex Tilapia", "Vietnam Koi", "Pabda"],
+    "capacityPerMonth": "250,000 fry",
+    "status": "Verified",
+    "rating": 4.8,
+    "joinedDate": "2026-02-25T16:45:00.000Z"
+  }
+]
