@@ -22,18 +22,15 @@ export async function login(
   }
 
   // Attempt backend API login first
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
   try {
-    const res = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      cache: "no-store",
-    });
+    const { publicApi } = await import("@/lib/api/axios-instances");
+    const res = await publicApi.post<{ success: boolean; token: string; user: any; message?: string }>(
+      "/auth/login",
+      { email, password }
+    );
+    const data = res.data;
 
-    const data = await res.json();
-
-    if (res.ok && data.success && data.token) {
+    if (data.success && data.token) {
       const user = data.user;
       // Ensure user has staff, manager, or admin privileges
       if (user && user.role === "Customer") {

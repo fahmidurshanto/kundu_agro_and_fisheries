@@ -136,8 +136,8 @@ async function saveThumbnailLocalFallback(file: File): Promise<string> {
   return `${UPLOAD_URL_PREFIX}${fileName}`;
 }
 
-async function removeThumbnailFile(thumbnail: string): Promise<void> {
-  if (!thumbnail.startsWith(UPLOAD_URL_PREFIX)) return;
+async function removeThumbnailFile(thumbnail?: string): Promise<void> {
+  if (!thumbnail || typeof thumbnail !== "string" || !thumbnail.startsWith(UPLOAD_URL_PREFIX)) return;
   const filePath = path.join(UPLOAD_DIR, path.basename(thumbnail));
   await unlink(filePath).catch(() => undefined);
 }
@@ -151,15 +151,14 @@ function revalidateAdminPages(): void {
   revalidatePath("/admin/products");
 }
 
+import { staffApi } from "@/lib/api/axios-instances";
+
 async function sendToBackend(
   endpoint: string,
   method: string,
   payload: Record<string, any>,
   thumbnailFile?: File
 ): Promise<{ ok: boolean; data?: any; error?: string }> {
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
-  const token = await getAccessToken();
-
   const form = new FormData();
   for (const [key, value] of Object.entries(payload)) {
     if (value !== null && value !== undefined) {
@@ -170,22 +169,19 @@ async function sendToBackend(
     form.append("thumbnail", thumbnailFile);
   }
 
-  const headers: Record<string, string> = {};
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    method,
-    headers,
-    body: form,
-    credentials: "include",
-    cache: "no-store",
-  });
-
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    return { ok: false, error: data?.message || `HTTP ${res.status}` };
+  try {
+    const res = await staffApi.request({
+      url: endpoint,
+      method: method.toUpperCase(),
+      data: form,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return { ok: true, data: res.data };
+  } catch (err: any) {
+    return { ok: false, error: err.message || "Failed to communicate with backend" };
   }
-  return { ok: true, data };
 }
 
 export async function createProduct(
@@ -311,10 +307,13 @@ export async function deleteProduct(
   try {
     const removed = await deleteProductById(id);
     if (!removed) return { error: "This product no longer exists." };
-    await removeThumbnailFile(removed.thumbnail);
+    if (removed.thumbnail) {
+      await removeThumbnailFile(removed.thumbnail);
+    }
     revalidateAdminPages();
     return { success: true };
-  } catch {
-    return { error: "Something went wrong while deleting the product." };
+  } catch (err: any) {
+    console.error("Failed to delete product:", err);
+    return { error: err?.message || "Something went wrong while deleting the product." };
   }
 }

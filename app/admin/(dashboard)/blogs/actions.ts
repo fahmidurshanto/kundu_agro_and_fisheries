@@ -148,14 +148,14 @@ async function saveVideoLocalFallback(file: File): Promise<string> {
   return `${VIDEO_PREFIX}${fileName}`;
 }
 
-async function removeThumbnailFile(thumbnail: string): Promise<void> {
-  if (!thumbnail.startsWith(THUMBNAIL_PREFIX)) return;
+async function removeThumbnailFile(thumbnail?: string): Promise<void> {
+  if (!thumbnail || typeof thumbnail !== "string" || !thumbnail.startsWith(THUMBNAIL_PREFIX)) return;
   const filePath = path.join(THUMBNAIL_DIR, path.basename(thumbnail));
   await unlink(filePath).catch(() => undefined);
 }
 
-async function removeVideoFile(videoUrl: string): Promise<void> {
-  if (!videoUrl.startsWith(VIDEO_PREFIX)) return;
+async function removeVideoFile(videoUrl?: string): Promise<void> {
+  if (!videoUrl || typeof videoUrl !== "string" || !videoUrl.startsWith(VIDEO_PREFIX)) return;
   const filePath = path.join(VIDEO_DIR, path.basename(videoUrl));
   await unlink(filePath).catch(() => undefined);
 }
@@ -169,6 +169,8 @@ function revalidateAdminPages(): void {
   revalidatePath("/admin/blogs");
 }
 
+import { staffApi } from "@/lib/api/axios-instances";
+
 async function sendToBackend(
   endpoint: string,
   method: string,
@@ -176,9 +178,6 @@ async function sendToBackend(
   thumbnailFile?: File,
   videoFile?: File
 ): Promise<{ ok: boolean; data?: any; error?: string }> {
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
-  const token = await getAccessToken();
-
   const form = new FormData();
   for (const [key, value] of Object.entries(payload)) {
     if (value !== null && value !== undefined) {
@@ -192,22 +191,19 @@ async function sendToBackend(
   if (thumbnailFile) form.append("thumbnail", thumbnailFile);
   if (videoFile) form.append("video", videoFile);
 
-  const headers: Record<string, string> = {};
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    method,
-    headers,
-    body: form,
-    credentials: "include",
-    cache: "no-store",
-  });
-
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    return { ok: false, error: data?.message || `HTTP ${res.status}` };
+  try {
+    const res = await staffApi.request({
+      url: endpoint,
+      method: method.toUpperCase(),
+      data: form,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return { ok: true, data: res.data };
+  } catch (err: any) {
+    return { ok: false, error: err.message || "Failed to communicate with backend" };
   }
-  return { ok: true, data };
 }
 
 export async function createBlog(
@@ -398,13 +394,16 @@ export async function deleteBlog(
   try {
     const removed = await deleteBlogById(id);
     if (!removed) return { error: "This blog no longer exists." };
-    await removeThumbnailFile(removed.thumbnail);
+    if (removed.thumbnail) {
+      await removeThumbnailFile(removed.thumbnail);
+    }
     if (removed.videoUrl) {
       await removeVideoFile(removed.videoUrl);
     }
     revalidateAdminPages();
     return { success: true };
-  } catch {
-    return { error: "Something went wrong while deleting the blog." };
+  } catch (err: any) {
+    console.error("Failed to delete blog:", err);
+    return { error: err?.message || "Something went wrong while deleting the blog." };
   }
 }

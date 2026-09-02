@@ -51,7 +51,7 @@ async function writeBlogs(blogs: Blog[]): Promise<void> {
 
 export async function getBlogs(): Promise<Blog[]> {
   try {
-    const res = await adminFetch<any[]>("/admin/blogs");
+    const res = await adminFetch<any[]>("/blogs");
     const list = res.data || res.blogs || (Array.isArray(res) ? res : null);
     if (list && Array.isArray(list)) {
       return list.map(formatBackendBlog);
@@ -68,7 +68,7 @@ export async function getBlogs(): Promise<Blog[]> {
 
 export async function getBlogById(id: string): Promise<Blog | null> {
   try {
-    const res = await adminFetch<any>(`/admin/blogs/${id}`);
+    const res = await adminFetch<any>(`/blogs/${id}`);
     const item = res.data || res.blog || res;
     if (item && (item._id || item.id)) {
       return formatBackendBlog(item);
@@ -160,22 +160,26 @@ export async function updateBlogById(
 }
 
 export async function deleteBlogById(id: string): Promise<Blog | null> {
+  const blogs = await readBlogs();
+  const existing = blogs.find((blog) => blog.id === id) || ({ id, thumbnail: "" } as Blog);
+
   try {
     const res = await adminFetch<any>(`/admin/blogs/${id}`, {
       method: "DELETE",
     });
     if (res.success) {
-      return { id } as Blog;
+      await writeBlogs(blogs.filter((blog) => blog.id !== id));
+      return existing;
     }
   } catch (err) {
     console.warn(`Backend deleteBlogById for ${id} failed, deleting locally:`, err);
   }
 
-  const blogs = await readBlogs();
-  const existing = blogs.find((blog) => blog.id === id);
-  if (!existing) return null;
-
-  await writeBlogs(blogs.filter((blog) => blog.id !== id));
+  const localBlog = blogs.find((blog) => blog.id === id);
+  if (localBlog) {
+    await writeBlogs(blogs.filter((blog) => blog.id !== id));
+    return localBlog;
+  }
   return existing;
 }
 

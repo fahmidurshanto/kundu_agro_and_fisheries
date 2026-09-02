@@ -38,8 +38,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (key: TranslationKey): string => {
-    const langDict = translations[language] || translations.en;
-    return langDict[key] || translations.en[key] || key;
+    const langDict: Record<string, string> = translations[language] || translations.en;
+    return langDict[key] || (translations.en as Record<string, string>)[key] || key;
   };
 
   return (

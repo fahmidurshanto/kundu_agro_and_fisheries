@@ -10,7 +10,7 @@ export const translations = {
     dashboard: "Dashboard",
     dashboardSubtitle: "Overview of your agro and fisheries operations.",
     products: "Products",
-
+    sellers: "Sellers",
     blogs: "Blogs",
     users: "Users",
     orders: "Orders",
@@ -65,6 +65,8 @@ export const translations = {
     addToCart: "Add to Cart",
     addedToCart: "Added!",
     viewDetails: "View Details",
+    productDetails: "Product Details",
+    descriptionLabel: "Description",
 
     // Cart Drawer
     yourCart: "Your Shopping Cart",
@@ -179,8 +181,6 @@ export const translations = {
     tableDistrict: "District",
     tableCapacity: "Monthly Capacity",
     tableFishTypes: "Species Offered",
-    tableStatus: "Verification Status",
-    tableActions: "Actions",
     verify: "Verify",
     suspend: "Suspend",
     sellerDetails: "Seller Details",
@@ -193,12 +193,12 @@ export const translations = {
     sellerStatus: "Status",
     statusVerified: "Verified",
     statusPending: "Pending Verification",
-    statusInactive: "Inactive / Suspended",
     rating: "Rating",
     joinedDate: "Joined Date",
     addSellerTitle: "Add Fish Seed Seller",
     addSellerSubtitle: "Register a new hatchery or fish seed supplier to the platform.",
     fishTypesHelp: "Separate species with commas (e.g. Rui, Katla, Monosex Tilapia)",
+    saveSeller: "Save Seller",
     // Dedicated Seller Portal Translations (English)
     sellerPortal: "Fish Seed Seller Portal",
     sellerPortalSubtitle: "Manage your hatchery fry stock, price quotes, and farmer inquiries.",
@@ -301,6 +301,8 @@ export const translations = {
     addToCart: "কার্টে যোগ করুন",
     addedToCart: "যোগ হয়েছে!",
     viewDetails: "বিবরণ দেখুন",
+    productDetails: "পণ্যের বিবরণ",
+    descriptionLabel: "বিবরণ",
 
     // Cart Drawer
     yourCart: "আপনার শপিং কার্ট",
@@ -416,8 +418,6 @@ export const translations = {
     tableDistrict: "জেলা",
     tableCapacity: "মাসিক সক্ষমতা",
     tableFishTypes: "পোনা প্রজাতি",
-    tableStatus: "অনুমোদন অবস্থা",
-    tableActions: "অ্যাকশন",
     verify: "অনুমোদন দিন",
     suspend: "স্থগিত করুন",
     sellerDetails: "বিক্রেতার বিবরণ",
@@ -430,7 +430,6 @@ export const translations = {
     sellerStatus: "স্ট্যাটাস",
     statusVerified: "অনুমোদিত (Verified)",
     statusPending: "অপেক্ষমান (Pending)",
-    statusInactive: "নিষ্ক্রিয় / স্থগিত",
     rating: "রেটিং",
     joinedDate: "নিবন্ধনের তারিখ",
     addSellerTitle: "নতুন পোনা বিক্রেতা যোগ করুন",

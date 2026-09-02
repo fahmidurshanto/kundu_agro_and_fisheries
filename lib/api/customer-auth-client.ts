@@ -1,5 +1,10 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+import {
+  customerApi,
+  publicApi,
+  API_BASE_URL,
+} from "./axios-instances";
+
+export { API_BASE_URL };
 
 export interface CustomerUser {
   id: string;
@@ -17,45 +22,44 @@ export interface AuthResponse {
   message?: string;
   token?: string;
   user?: CustomerUser;
+  data?: any;
 }
 
+/**
+ * Universal customer request helper powered by Axios
+ */
 export async function customerFetch<T = any>(
   endpoint: string,
-  options: RequestInit = {}
+  options: {
+    method?: string;
+    body?: any;
+    headers?: Record<string, string>;
+    params?: any;
+  } = {}
 ): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
-
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>),
-  };
-
-  if (typeof window === "undefined") {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const token =
-      cookieStore.get("customerAccessToken")?.value ||
-      cookieStore.get("accessToken")?.value ||
-      cookieStore.get("token")?.value;
-    if (token && !headers["Authorization"]) {
-      headers["Authorization"] = `Bearer ${token}`;
+  const method = (options.method || "GET").toUpperCase();
+  const url = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  let data = options.body;
+  if (typeof data === "string") {
+    try {
+      data = JSON.parse(data);
+    } catch {
+      // Keep as string if not JSON
     }
   }
 
-  const res = await fetch(url, {
-    ...options,
-    headers,
-    credentials: "include",
-    cache: "no-store",
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(data?.message || `HTTP Error ${res.status}`);
+  try {
+    const res = await customerApi.request<T>({
+      url,
+      method,
+      data,
+      params: options.params,
+      headers: options.headers,
+    });
+    return res.data;
+  } catch (error: any) {
+    throw error;
   }
-
-  return data;
 }
 
 export async function registerCustomerApi(data: {
@@ -65,26 +69,36 @@ export async function registerCustomerApi(data: {
   phone?: string;
   role?: string;
 }): Promise<AuthResponse> {
-  return customerFetch<AuthResponse>("/auth/register", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  const res = await publicApi.post<AuthResponse>("/auth/register", data);
+  return res.data;
 }
 
 export async function loginCustomerApi(
   email: string,
   password: string
 ): Promise<AuthResponse> {
-  return customerFetch<AuthResponse>("/auth/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
+  const res = await publicApi.post<AuthResponse>("/auth/login", { email, password });
+  return res.data;
 }
 
 export async function getCustomerProfileApi(): Promise<CustomerUser | null> {
+  if (typeof window === "undefined") {
+    try {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const token =
+        cookieStore.get("customerAccessToken")?.value ||
+        cookieStore.get("accessToken")?.value ||
+        cookieStore.get("token")?.value;
+      if (!token) return null;
+    } catch {
+      return null;
+    }
+  }
+
   try {
-    const res = await customerFetch<AuthResponse>("/auth/me");
-    return res.user || (res as any).data || null;
+    const res = await customerApi.get<AuthResponse>("/auth/me");
+    return res.data?.user || (res.data as any)?.data || null;
   } catch {
     return null;
   }
@@ -92,10 +106,8 @@ export async function getCustomerProfileApi(): Promise<CustomerUser | null> {
 
 export async function logoutCustomerApi(): Promise<boolean> {
   try {
-    const res = await customerFetch<AuthResponse>("/auth/logout", {
-      method: "POST",
-    });
-    return res.success;
+    const res = await customerApi.post<AuthResponse>("/auth/logout");
+    return Boolean(res.data?.success);
   } catch {
     return false;
   }
@@ -106,11 +118,24 @@ export async function changePasswordApi(data: {
   currentPassword?: string;
   newPassword: string;
 }): Promise<{ success: boolean; message?: string }> {
-  return customerFetch<{ success: boolean; message?: string }>(
-    "/auth/changepassword",
-    {
-      method: "POST",
-      body: JSON.stringify(data),
+  try {
+    const res = await customerApi.put<{ success: boolean; message?: string }>(
+      "/customer/change-password",
+      data
+    );
+    return res.data;
+  } catch (err: any) {
+    // Fallback to legacy auth changepassword if needed
+    try {
+      const fallback = await customerApi.post<{ success: boolean; message?: string }>(
+        "/auth/changepassword",
+        data
+      );
+      return fallback.data;
+    } catch {
+      throw err;
     }
-  );
+  }
 }
+
+export { customerApi, publicApi };

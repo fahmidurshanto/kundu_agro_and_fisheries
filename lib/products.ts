@@ -49,8 +49,7 @@ async function writeProducts(products: Product[]): Promise<void> {
 
 export async function getProducts(): Promise<Product[]> {
   try {
-    const res = await adminFetch<any[]>("/admin/products");
-    console.log("🚀 [DEBUG] Raw /admin/products API Response:", JSON.stringify(res, null, 2));
+    const res = await adminFetch<any[]>("/products");
     const list = res.data || res.products || (Array.isArray(res) ? res : null);
     if (list && Array.isArray(list)) {
       return list.map(formatBackendProduct);
@@ -67,7 +66,7 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getProductById(id: string): Promise<Product | null> {
   try {
-    const res = await adminFetch<any>(`/admin/products/${id}`);
+    const res = await adminFetch<any>(`/products/${id}`);
     const item = res.data || res.product || res;
     if (item && (item._id || item.id)) {
       return formatBackendProduct(item);
@@ -168,22 +167,26 @@ export async function updateProductById(
 }
 
 export async function deleteProductById(id: string): Promise<Product | null> {
+  const products = await readProducts();
+  const existing = products.find((product) => product.id === id) || ({ id, thumbnail: "" } as Product);
+
   try {
     const res = await adminFetch<any>(`/admin/products/${id}`, {
       method: "DELETE",
     });
     if (res.success) {
-      return { id } as Product;
+      await writeProducts(products.filter((product) => product.id !== id));
+      return existing;
     }
   } catch (err) {
     console.warn(`Backend deleteProductById for ${id} failed, deleting locally:`, err);
   }
 
-  const products = await readProducts();
-  const existing = products.find((product) => product.id === id);
-  if (!existing) return null;
-
-  await writeProducts(products.filter((product) => product.id !== id));
+  const localProduct = products.find((product) => product.id === id);
+  if (localProduct) {
+    await writeProducts(products.filter((product) => product.id !== id));
+    return localProduct;
+  }
   return existing;
 }
 
