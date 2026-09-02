@@ -66,7 +66,7 @@ export function BlogsList({ blogs }: BlogsListProps) {
                       <div className="relative h-12 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
                         {blog.thumbnail ? (
                           <Image
-                            src={blog.thumbnail}
+                            src={blog.thumbnail || "/placeholder.png"}
                             alt={blog.title}
                             fill
                             className="object-cover"

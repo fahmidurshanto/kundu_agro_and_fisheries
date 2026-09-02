@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLanguage } from "@/app/components/language-context";
 import { TranslationKey } from "@/lib/translations";
+import { DashboardPieChart, BreakdownData } from "./dashboard-pie-chart";
 
 type Stat = {
   key: TranslationKey;
@@ -13,16 +14,25 @@ type Stat = {
 export function DashboardContent({
   productCount,
   userCount,
+  blogCount = 0,
+  orderCount = 0,
+  totalRevenue = 0,
+  breakdown,
 }: {
   productCount: number;
   userCount: number;
+  blogCount?: number;
+  orderCount?: number;
+  totalRevenue?: number;
+  breakdown?: BreakdownData;
 }) {
   const { t } = useLanguage();
 
   const stats: Stat[] = [
     { key: "products", value: String(productCount), href: "/admin/products" },
     { key: "users", value: String(userCount), href: "/admin/users" },
-    { key: "productsTitle", value: "0", href: "#" },
+    { key: "blogsTitle" as TranslationKey, value: String(blogCount), href: "/admin/blogs" },
+    { key: "orders" as TranslationKey, value: String(orderCount), href: "/admin/orders" },
   ];
 
   return (
@@ -44,7 +54,8 @@ export function DashboardContent({
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {/* Top Stat Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
         {stats.map((stat) => (
           <Link
             key={stat.key}
@@ -58,7 +69,28 @@ export function DashboardContent({
           </Link>
         ))}
       </div>
+      
+      {/* Revenue Card */}
+      {totalRevenue > 0 && (
+        <div className="rounded-xl border border-gray-100 bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white shadow-sm">
+          <p className="text-sm font-medium text-emerald-100">Total Revenue</p>
+          <p className="mt-2 text-3xl font-bold">৳ {totalRevenue.toLocaleString()}</p>
+        </div>
+      )}
+
+      {/* Interactive Analytics Pie Chart */}
+      <DashboardPieChart
+        stats={{
+          products: productCount,
+          users: userCount,
+          blogs: blogCount,
+          orders: orderCount,
+        }}
+        breakdown={breakdown}
+      />
     </div>
   );
 }
+
+
 

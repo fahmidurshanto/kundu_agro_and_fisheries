@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { getOrders } from "@/lib/orders";
+import { getCurrentCustomer } from "../auth-actions";
 import { OrdersContent } from "./orders-content";
 
 export const metadata = {
@@ -7,6 +9,11 @@ export const metadata = {
 };
 
 export default async function OrdersPage() {
+  const customer = await getCurrentCustomer();
+  if (!customer) {
+    redirect("/login");
+  }
+
   const orders = await getOrders();
   return <OrdersContent initialOrders={orders} />;
 }

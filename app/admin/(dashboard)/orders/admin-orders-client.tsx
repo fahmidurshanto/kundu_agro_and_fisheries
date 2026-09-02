@@ -216,7 +216,7 @@ export function AdminOrdersClient({ initialOrders }: AdminOrdersClientProps) {
                   <div key={item.id} className="p-3 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-gray-100 border border-gray-100 flex-shrink-0">
-                        <Image src={item.thumbnail} alt={item.name} fill className="object-cover" />
+                        <Image src={item.thumbnail || "/placeholder.png"} alt={item.name} fill className="object-cover" />
                       </div>
                       <div>
                         <p className="text-xs font-bold text-gray-900">{item.name}</p>

@@ -1,44 +1,14 @@
 [
   {
-    "name": "Premium Carpet",
-    "description": "asfdsadfa asdf asd fasd fas",
-    "category": "Human food",
+    "name": "Dairy Doodh",
+    "description": "fasldkfjl; sakl;kjsf lkdsajflkjdsa dsf;jdsaiof uoewifrjoew qij fjldsakjf l;kasdjfdsajk fl;kadsjf ;lsakdjf l;kasdjf ;lasdjf l;jasd",
+    "category": "Fisheries medicine / chemical",
     "unit": "litre",
-    "price": 2342,
-    "compareAtPrice": 12312,
-    "thumbnail": "/uploads/products/1787527061739-kunduagro.png",
-    "id": "0245a560-70e8-4b7a-a1a9-f1ddcad08eb7",
-    "slug": "premium-carpet",
-    "createdAt": "2026-08-23T23:17:41.744Z"
-  },
-  {
-    "name": "Pangash Mas (পাঙ্গাস মাছের পোনা)",
-    "description": "Fast growing healthy Pangash fish fingerlings produced in certified hatchery ponds.",
-    "category": "Fish seed / মাছের পোনা",
-    "unit": "piece",
-    "price": 2.5,
-    "compareAtPrice": null,
-    "thumbnail": "/uploads/products/1787806374604-modern-minimalist-poster-background-for-.jpg",
-    "id": "128a88bd-cbea-45fb-8197-31fcfa641b1c",
-    "slug": "pangash-mas",
-    "createdAt": "2026-08-27T04:52:54.610Z",
-    "sellerName": "Messrs Al-Amin Hatchery",
-    "sellerDistrict": "Bogra (Bogura)",
-    "sellerPhone": "01711-987654"
-  },
-  {
-    "name": "Hybrid Rui Fish Seed (হাইব্রিড রুই পোনা)",
-    "description": "High growth rate 3-inch Rui fish fingerlings ready for stocking in commercial fish ponds.",
-    "category": "Fish seed / মাছের পোনা",
-    "unit": "thousand / হাজার",
-    "price": 1800,
-    "compareAtPrice": 2100,
-    "thumbnail": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=400&q=80",
-    "id": "893b1234-cbea-45fb-8197-31fcfa641b1d",
-    "slug": "hybrid-rui-fish-seed",
-    "createdAt": "2026-08-27T08:00:00.000Z",
-    "sellerName": "Ma Fatema Fish Hatchery",
-    "sellerDistrict": "Mymensingh",
-    "sellerPhone": "01819-123456"
+    "price": 80,
+    "compareAtPrice": 100,
+    "thumbnail": "/uploads/products/1788192577623-screencapture-educationboardresults-gov-.png",
+    "id": "5b79085f-290b-4a7d-a82b-5c26276609d0",
+    "slug": "dairy-doodh",
+    "createdAt": "2026-08-31T16:09:37.631Z"
   }
 ]

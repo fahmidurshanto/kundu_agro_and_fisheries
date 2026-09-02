@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { getAdminProfileApi } from "@/lib/api/admin-client";
 import { LanguageProvider } from "@/app/components/language-context";
 import { MobileNav } from "./mobile-nav";
 import { HeaderNav } from "./header-nav";
@@ -21,6 +22,8 @@ export default async function DashboardLayout({
   if (!session) {
     redirect("/admin/login");
   }
+
+  const profile = await getAdminProfileApi();
 
   return (
     <LanguageProvider>
@@ -41,7 +44,7 @@ export default async function DashboardLayout({
 
 
             {/* Desktop Nav — hidden on mobile */}
-            <HeaderNav />
+            <HeaderNav user={profile || { name: "Admin", email: session.email, role: "Admin", id: "1" }} />
 
             {/* Mobile Hamburger + Drawer — visible only on mobile */}
             <MobileNav />
@@ -52,4 +55,5 @@ export default async function DashboardLayout({
     </LanguageProvider>
   );
 }
+
 

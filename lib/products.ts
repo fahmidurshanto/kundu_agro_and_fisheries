@@ -1,11 +1,36 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-
+import { adminFetch, adminFetchFormData } from "./api/admin-client";
 import { PRODUCT_CATEGORIES, PRODUCT_UNITS, type Product } from "./product-types";
 export { PRODUCT_CATEGORIES, PRODUCT_UNITS, type Product };
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "products.json");
+
+function formatBackendProduct(p: any): Product {
+  console.log("📦 [DEBUG] Raw Product object from backend API:", JSON.stringify(p, null, 2));
+  const backendBase = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
+  let thumbnail = p.thumbnail || p.image || p.imageUrl || "";
+  if (thumbnail && !thumbnail.startsWith("http://") && !thumbnail.startsWith("https://")) {
+    const cleanPath = thumbnail.startsWith("/") ? thumbnail : `/${thumbnail}`;
+    thumbnail = `${backendBase}${cleanPath}`;
+  }
+  return {
+    id: p._id || p.id,
+    slug: p.slug || "",
+    name: p.name || "",
+    description: p.description || "",
+    category: p.category || "",
+    price: Number(p.price || 0),
+    compareAtPrice: p.compareAtPrice ? Number(p.compareAtPrice) : null,
+    unit: p.unit || "kg",
+    thumbnail: thumbnail,
+    createdAt: p.createdAt || new Date().toISOString(),
+    sellerName: p.sellerName,
+    sellerDistrict: p.sellerDistrict,
+    sellerPhone: p.sellerPhone,
+  };
+}
 
 async function readProducts(): Promise<Product[]> {
   try {
@@ -23,6 +48,17 @@ async function writeProducts(products: Product[]): Promise<void> {
 }
 
 export async function getProducts(): Promise<Product[]> {
+  try {
+    const res = await adminFetch<any[]>("/admin/products");
+    console.log("🚀 [DEBUG] Raw /admin/products API Response:", JSON.stringify(res, null, 2));
+    const list = res.data || res.products || (Array.isArray(res) ? res : null);
+    if (list && Array.isArray(list)) {
+      return list.map(formatBackendProduct);
+    }
+  } catch (err) {
+    console.warn("Backend products fetch failed, using local data fallback:", err);
+  }
+
   const products = await readProducts();
   return products.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -30,6 +66,16 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
+  try {
+    const res = await adminFetch<any>(`/admin/products/${id}`);
+    const item = res.data || res.product || res;
+    if (item && (item._id || item.id)) {
+      return formatBackendProduct(item);
+    }
+  } catch (err) {
+    console.warn(`Backend product fetch for ${id} failed, using local fallback:`, err);
+  }
+
   const products = await readProducts();
   return products.find((product) => product.id === id) ?? null;
 }
@@ -46,8 +92,18 @@ export function slugify(value: string): string {
 export async function addProduct(
   input: Omit<Product, "id" | "slug" | "createdAt">
 ): Promise<Product> {
-  const products = await readProducts();
+  try {
+    const res = await adminFetch<any>("/admin/products", {
+      method: "POST",
+      body: JSON.stringify(input),
+    });
+    const created = res.data || res.product;
+    if (created) return formatBackendProduct(created);
+  } catch (err) {
+    console.warn("Backend addProduct failed, saving locally:", err);
+  }
 
+  const products = await readProducts();
   const baseSlug = slugify(input.name) || "product";
   let slug = baseSlug;
   let suffix = 2;
@@ -73,6 +129,17 @@ export async function updateProductById(
   input: Omit<Product, "id" | "slug" | "createdAt" | "thumbnail">,
   thumbnail?: string
 ): Promise<Product | null> {
+  try {
+    const res = await adminFetch<any>(`/admin/products/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({ ...input, thumbnail }),
+    });
+    const updated = res.data || res.product;
+    if (updated) return formatBackendProduct(updated);
+  } catch (err) {
+    console.warn(`Backend updateProductById for ${id} failed, saving locally:`, err);
+  }
+
   const products = await readProducts();
   const index = products.findIndex((product) => product.id === id);
   if (index === -1) return null;
@@ -101,6 +168,17 @@ export async function updateProductById(
 }
 
 export async function deleteProductById(id: string): Promise<Product | null> {
+  try {
+    const res = await adminFetch<any>(`/admin/products/${id}`, {
+      method: "DELETE",
+    });
+    if (res.success) {
+      return { id } as Product;
+    }
+  } catch (err) {
+    console.warn(`Backend deleteProductById for ${id} failed, deleting locally:`, err);
+  }
+
   const products = await readProducts();
   const existing = products.find((product) => product.id === id);
   if (!existing) return null;
@@ -108,3 +186,4 @@ export async function deleteProductById(id: string): Promise<Product | null> {
   await writeProducts(products.filter((product) => product.id !== id));
   return existing;
 }
+

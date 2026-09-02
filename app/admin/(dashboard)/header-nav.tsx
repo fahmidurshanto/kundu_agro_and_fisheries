@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useLanguage } from "@/app/components/language-context";
 import { LanguageToggle } from "@/app/components/language-toggle";
 import { logout } from "./actions";
+import type { AdminUserProfile } from "@/lib/api/admin-client";
 
-export function HeaderNav() {
+export function HeaderNav({ user }: { user?: AdminUserProfile }) {
   const { t } = useLanguage();
 
   return (
@@ -47,21 +48,19 @@ export function HeaderNav() {
         >
           {t("orders")}
         </Link>
-        <Link
-          href="/admin/products/new"
-          className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-        >
-          {t("addProduct")}
-        </Link>
-        <Link
-          href="/admin/blogs/new"
-          className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-        >
-          {t("addBlog")}
-        </Link>
       </nav>
 
       <LanguageToggle />
+
+      {user && (
+        <div className="flex items-center gap-2 rounded-lg bg-gray-50 border border-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <span>{user.name || user.email}</span>
+          <span className="rounded bg-gray-200/80 px-1.5 py-0.5 text-[10px] text-gray-600">
+            {user.role}
+          </span>
+        </div>
+      )}
 
       <form action={logout}>
         <button
@@ -74,3 +73,4 @@ export function HeaderNav() {
     </div>
   );
 }
+

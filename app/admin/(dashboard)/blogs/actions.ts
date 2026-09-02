@@ -7,10 +7,8 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 import {
-  addBlog,
   deleteBlogById,
   getBlogById,
-  updateBlogById,
 } from "@/lib/blogs";
 
 export type CreateBlogState = {
@@ -42,6 +40,7 @@ const ALLOWED_VIDEO_TYPES = new Set([
   "video/ogg",
 ]);
 
+// Local fallback paths (only used if backend is offline)
 const THUMBNAIL_DIR = path.join(process.cwd(), "public", "uploads", "blogs");
 const THUMBNAIL_PREFIX = "/uploads/blogs/";
 
@@ -64,6 +63,11 @@ async function requireSession(): Promise<boolean> {
   return Boolean(
     await verifySessionToken(cookieStore.get(SESSION_COOKIE)?.value)
   );
+}
+
+async function getAccessToken(): Promise<string | undefined> {
+  const cookieStore = await cookies();
+  return cookieStore.get("accessToken")?.value || cookieStore.get("token")?.value;
 }
 
 type ParsedBlogInput = {
@@ -128,7 +132,7 @@ function validateVideoFile(file: File): string | null {
   return null;
 }
 
-async function saveThumbnailFile(file: File): Promise<string> {
+async function saveThumbnailLocalFallback(file: File): Promise<string> {
   await mkdir(THUMBNAIL_DIR, { recursive: true });
   const fileName = `${Date.now()}-${sanitizeFileName(file.name)}`;
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -136,7 +140,7 @@ async function saveThumbnailFile(file: File): Promise<string> {
   return `${THUMBNAIL_PREFIX}${fileName}`;
 }
 
-async function saveVideoFile(file: File): Promise<string> {
+async function saveVideoLocalFallback(file: File): Promise<string> {
   await mkdir(VIDEO_DIR, { recursive: true });
   const fileName = `${Date.now()}-${sanitizeFileName(file.name)}`;
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -165,6 +169,47 @@ function revalidateAdminPages(): void {
   revalidatePath("/admin/blogs");
 }
 
+async function sendToBackend(
+  endpoint: string,
+  method: string,
+  payload: Record<string, any>,
+  thumbnailFile?: File,
+  videoFile?: File
+): Promise<{ ok: boolean; data?: any; error?: string }> {
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+  const token = await getAccessToken();
+
+  const form = new FormData();
+  for (const [key, value] of Object.entries(payload)) {
+    if (value !== null && value !== undefined) {
+      if (Array.isArray(value)) {
+        value.forEach((v) => form.append(key, String(v)));
+      } else {
+        form.append(key, String(value));
+      }
+    }
+  }
+  if (thumbnailFile) form.append("thumbnail", thumbnailFile);
+  if (videoFile) form.append("video", videoFile);
+
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    method,
+    headers,
+    body: form,
+    credentials: "include",
+    cache: "no-store",
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    return { ok: false, error: data?.message || `HTTP ${res.status}` };
+  }
+  return { ok: true, data };
+}
+
 export async function createBlog(
   _prev: CreateBlogState,
   formData: FormData
@@ -183,20 +228,54 @@ export async function createBlog(
   const thumbnailError = validateThumbnailFile(thumbnail);
   if (thumbnailError) return { error: thumbnailError };
 
-  let videoUrl = parsed.data.videoUrl;
-  const videoFile = formData.get("videoFile");
-  if (hasUploadedFile(videoFile)) {
+  const videoFileEntry = formData.get("videoFile");
+  const videoFile = hasUploadedFile(videoFileEntry) ? videoFileEntry : undefined;
+  if (videoFile) {
     const videoError = validateVideoFile(videoFile);
     if (videoError) return { error: videoError };
+  }
+
+  // Try backend first
+  try {
+    const result = await sendToBackend(
+      "/admin/blogs",
+      "POST",
+      {
+        title: parsed.data.title,
+        description: parsed.data.description,
+        content: parsed.data.content,
+        videoUrl: parsed.data.videoUrl,
+        tags: parsed.data.tags,
+      },
+      thumbnail,
+      videoFile
+    );
+    if (result.ok) {
+      revalidateAdminPages();
+      const title = result.data?.blog?.title || result.data?.data?.title || parsed.data.title;
+      return {
+        success: `"${title}" has been published.`,
+        successId: crypto.randomUUID(),
+      };
+    }
+    return { error: result.error || "Something went wrong while saving the blog post." };
+  } catch (err: any) {
+    console.warn("Backend createBlog failed, using local fallback:", err?.message);
+  }
+
+  // Local fallback
+  let videoUrl = parsed.data.videoUrl;
+  if (videoFile) {
     try {
-      videoUrl = await saveVideoFile(videoFile);
+      videoUrl = await saveVideoLocalFallback(videoFile);
     } catch {
       return { error: "Something went wrong while uploading the video." };
     }
   }
 
   try {
-    const thumbnailUrl = await saveThumbnailFile(thumbnail);
+    const thumbnailUrl = await saveThumbnailLocalFallback(thumbnail);
+    const { addBlog } = await import("@/lib/blogs");
     const blog = await addBlog({
       ...parsed.data,
       thumbnail: thumbnailUrl,
@@ -204,7 +283,7 @@ export async function createBlog(
     });
     revalidateAdminPages();
     return {
-      success: `“${blog.title}” has been published.`,
+      success: `"${blog.title}" has been published.`,
       successId: crypto.randomUUID(),
     };
   } catch {
@@ -223,40 +302,73 @@ export async function updateBlog(
   const id = String(formData.get("id") ?? "").trim();
   if (!id) return { error: "Missing blog reference." };
 
-  const existing = await getBlogById(id);
-  if (!existing) return { error: "This blog no longer exists." };
-
   const parsed = parseBlogInput(formData);
   if (!parsed.ok) return { error: parsed.error };
 
-  let thumbnailUrl: string | undefined;
   const thumbnail = formData.get("thumbnail");
-  if (hasUploadedFile(thumbnail)) {
-    const thumbnailError = validateThumbnailFile(thumbnail);
+  const thumbnailFile = hasUploadedFile(thumbnail) ? thumbnail : undefined;
+  if (thumbnailFile) {
+    const thumbnailError = validateThumbnailFile(thumbnailFile);
     if (thumbnailError) return { error: thumbnailError };
+  }
+
+  const videoFileEntry = formData.get("videoFile");
+  const videoFile = hasUploadedFile(videoFileEntry) ? videoFileEntry : undefined;
+  if (videoFile) {
+    const videoError = validateVideoFile(videoFile);
+    if (videoError) return { error: videoError };
+  }
+
+  // Try backend first
+  try {
+    const result = await sendToBackend(
+      `/admin/blogs/${id}`,
+      "PUT",
+      {
+        title: parsed.data.title,
+        description: parsed.data.description,
+        content: parsed.data.content,
+        videoUrl: parsed.data.videoUrl,
+        tags: parsed.data.tags,
+      },
+      thumbnailFile,
+      videoFile
+    );
+    if (result.ok) {
+      revalidateAdminPages();
+      redirect("/admin/blogs");
+    }
+    return { error: result.error || "Something went wrong while updating the blog." };
+  } catch (err: any) {
+    if (err?.digest?.startsWith("NEXT_REDIRECT")) throw err;
+    console.warn("Backend updateBlog failed, using local fallback:", err?.message);
+  }
+
+  // Local fallback
+  const existing = await getBlogById(id);
+  if (!existing) return { error: "This blog no longer exists." };
+
+  let thumbnailUrl: string | undefined;
+  if (thumbnailFile) {
     try {
-      thumbnailUrl = await saveThumbnailFile(thumbnail);
+      thumbnailUrl = await saveThumbnailLocalFallback(thumbnailFile);
     } catch {
       return { error: "Something went wrong while uploading the thumbnail." };
     }
   }
 
   let videoUrl = parsed.data.videoUrl ?? existing.videoUrl;
-  const videoFile = formData.get("videoFile");
-  if (hasUploadedFile(videoFile)) {
-    const videoError = validateVideoFile(videoFile);
-    if (videoError) return { error: videoError };
+  if (videoFile) {
     try {
-      videoUrl = await saveVideoFile(videoFile);
-      if (existing.videoUrl) {
-        await removeVideoFile(existing.videoUrl);
-      }
+      videoUrl = await saveVideoLocalFallback(videoFile);
+      if (existing.videoUrl) await removeVideoFile(existing.videoUrl);
     } catch {
       return { error: "Something went wrong while uploading the video." };
     }
   }
 
   try {
+    const { updateBlogById } = await import("@/lib/blogs");
     const updated = await updateBlogById(
       id,
       { ...parsed.data, videoUrl },

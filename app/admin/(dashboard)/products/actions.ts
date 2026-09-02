@@ -7,12 +7,9 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 import {
-  addProduct,
   deleteProductById,
   getProductById,
-  PRODUCT_CATEGORIES,
   PRODUCT_UNITS,
-  updateProductById,
 } from "@/lib/products";
 
 export type CreateProductState = {
@@ -37,6 +34,7 @@ const ALLOWED_IMAGE_TYPES = new Set([
   "image/webp",
   "image/avif",
 ]);
+// Local fallback paths (only used if backend is offline)
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "products");
 const UPLOAD_URL_PREFIX = "/uploads/products/";
 
@@ -56,6 +54,11 @@ async function requireSession(): Promise<boolean> {
   return Boolean(
     await verifySessionToken(cookieStore.get(SESSION_COOKIE)?.value)
   );
+}
+
+async function getAccessToken(): Promise<string | undefined> {
+  const cookieStore = await cookies();
+  return cookieStore.get("accessToken")?.value || cookieStore.get("token")?.value;
 }
 
 type ParsedProductInput = {
@@ -125,7 +128,7 @@ function validateThumbnailFile(file: File): string | null {
   return null;
 }
 
-async function saveThumbnailFile(file: File): Promise<string> {
+async function saveThumbnailLocalFallback(file: File): Promise<string> {
   await mkdir(UPLOAD_DIR, { recursive: true });
   const fileName = `${Date.now()}-${sanitizeFileName(file.name)}`;
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -148,6 +151,43 @@ function revalidateAdminPages(): void {
   revalidatePath("/admin/products");
 }
 
+async function sendToBackend(
+  endpoint: string,
+  method: string,
+  payload: Record<string, any>,
+  thumbnailFile?: File
+): Promise<{ ok: boolean; data?: any; error?: string }> {
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+  const token = await getAccessToken();
+
+  const form = new FormData();
+  for (const [key, value] of Object.entries(payload)) {
+    if (value !== null && value !== undefined) {
+      form.append(key, String(value));
+    }
+  }
+  if (thumbnailFile) {
+    form.append("thumbnail", thumbnailFile);
+  }
+
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    method,
+    headers,
+    body: form,
+    credentials: "include",
+    cache: "no-store",
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    return { ok: false, error: data?.message || `HTTP ${res.status}` };
+  }
+  return { ok: true, data };
+}
+
 export async function createProduct(
   _prev: CreateProductState,
   formData: FormData
@@ -166,12 +206,30 @@ export async function createProduct(
   const thumbnailError = validateThumbnailFile(thumbnail);
   if (thumbnailError) return { error: thumbnailError };
 
+  // Try backend first
   try {
-    const thumbnailUrl = await saveThumbnailFile(thumbnail);
+    const result = await sendToBackend("/admin/products", "POST", parsed.data, thumbnail);
+    if (result.ok) {
+      revalidateAdminPages();
+      const name = result.data?.product?.name || result.data?.data?.name || parsed.data.name;
+      return {
+        success: `"${name}" has been added.`,
+        successId: crypto.randomUUID(),
+      };
+    }
+    return { error: result.error || "Something went wrong while saving the product." };
+  } catch (err: any) {
+    console.warn("Backend createProduct failed, using local fallback:", err?.message);
+  }
+
+  // Local fallback
+  try {
+    const thumbnailUrl = await saveThumbnailLocalFallback(thumbnail);
+    const { addProduct } = await import("@/lib/products");
     const product = await addProduct({ ...parsed.data, thumbnail: thumbnailUrl });
     revalidateAdminPages();
     return {
-      success: `“${product.name}” has been added.`,
+      success: `"${product.name}" has been added.`,
       successId: crypto.randomUUID(),
     };
   } catch {
@@ -190,25 +248,44 @@ export async function updateProduct(
   const id = String(formData.get("id") ?? "").trim();
   if (!id) return { error: "Missing product reference." };
 
-  const existing = await getProductById(id);
-  if (!existing) return { error: "This product no longer exists." };
-
   const parsed = parseProductInput(formData);
   if (!parsed.ok) return { error: parsed.error };
 
-  let thumbnailUrl: string | undefined;
   const thumbnail = formData.get("thumbnail");
-  if (hasUploadedImage(thumbnail)) {
-    const thumbnailError = validateThumbnailFile(thumbnail);
+  const thumbnailFile = hasUploadedImage(thumbnail) ? thumbnail : undefined;
+  if (thumbnailFile) {
+    const thumbnailError = validateThumbnailFile(thumbnailFile);
     if (thumbnailError) return { error: thumbnailError };
+  }
+
+  // Try backend first
+  try {
+    const result = await sendToBackend(`/admin/products/${id}`, "PUT", parsed.data, thumbnailFile);
+    if (result.ok) {
+      revalidateAdminPages();
+      redirect("/admin/products");
+    }
+    return { error: result.error || "Something went wrong while updating the product." };
+  } catch (err: any) {
+    if (err?.digest?.startsWith("NEXT_REDIRECT")) throw err;
+    console.warn("Backend updateProduct failed, using local fallback:", err?.message);
+  }
+
+  // Local fallback
+  const existing = await getProductById(id);
+  if (!existing) return { error: "This product no longer exists." };
+
+  let thumbnailUrl: string | undefined;
+  if (thumbnailFile) {
     try {
-      thumbnailUrl = await saveThumbnailFile(thumbnail);
+      thumbnailUrl = await saveThumbnailLocalFallback(thumbnailFile);
     } catch {
       return { error: "Something went wrong while uploading the thumbnail." };
     }
   }
 
   try {
+    const { updateProductById } = await import("@/lib/products");
     const updated = await updateProductById(id, parsed.data, thumbnailUrl);
     if (!updated) return { error: "This product no longer exists." };
     if (thumbnailUrl) await removeThumbnailFile(existing.thumbnail);
